@@ -30,11 +30,12 @@ class ShortlinkApplicationTests {
 	void contextLoads() throws InterruptedException {
 		Map<String, String> map = new ConcurrentHashMap<>();
 		DateFormat dateFormat = new SimpleDateFormat("MMddHHmmssSSS");
-		ExecutorService executor = Executors.newFixedThreadPool(1000);
+		int current = 1000;
+		ExecutorService executor = Executors.newFixedThreadPool(current);
 		AtomicInteger flag = new AtomicInteger(0);
-		for(int i = 0; i< 1000; i++) {
+		for(int i = 0; i< current; i++) {
 			executor.execute(() -> {
-				for (int j = 0; j < 10000; j++) {
+				for (int j = 0; j < 100000; j++) {
 					String tmp = serialNumberUtil.concurrencyGenerateSerialNumber();
 					String dateTmp = dateFormat.format(new Date());
 //					String tmp = millsecondIncrTask.getLongValueStr();
@@ -49,9 +50,19 @@ class ShortlinkApplicationTests {
 				flag.getAndIncrement();
 			});
 		}
-		while(flag.get() < 1000){}
+		while(flag.get() < current){}
 		System.out.println(flag.get());
 		System.out.println(map.size());
+	}
+
+	@Test
+	public void test(){
+		AtomicInteger atomicInteger = new AtomicInteger(999);
+		int b = Integer.MAX_VALUE;
+		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
+		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
+		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
+		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
 	}
 
 }

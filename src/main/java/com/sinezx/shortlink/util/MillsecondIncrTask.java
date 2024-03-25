@@ -19,46 +19,25 @@ public class MillsecondIncrTask {
 
     private final static int CAPACITY = 1000;
 
-    private List<Node> atomicIntegerList;
+    private int threshold = 10000;
 
-    private Node currentNode;
+    private List<AtomicInteger> atomicIntegerList;
 
     @PostConstruct
     private void init(){
         atomicIntegerList = new ArrayList<>(CAPACITY);
         for(int i = 0; i < CAPACITY; i++){
-            atomicIntegerList.add(new Node());
+            atomicIntegerList.add(new AtomicInteger(0));
         }
-        for(int i = 0; i < CAPACITY - 1; i++){
-            atomicIntegerList.get(i).setNextNode(atomicIntegerList.get(i + 1));
-        }
-        atomicIntegerList.get(CAPACITY - 1).setNextNode(atomicIntegerList.get(0));
-        currentNode = atomicIntegerList.get(0);
-    }
-
-    @Scheduled(fixedDelay = 1)
-    public void resetLongAdder(){
-        currentNode = currentNode.nextNode;
-        currentNode.set(0);
     }
 
     public int getLongValue(int ms){
-        return atomicIntegerList.get(ms).getAndIncrement();
+        int abs = atomicIntegerList.get(ms).getAndIncrement() & Integer.MAX_VALUE;
+        return abs % threshold;
     }
 
     public String getLongValueStr(int ms){
-        return String.format("%03d", getLongValue(ms));
+        return String.format("%04d", getLongValue(ms));
     }
 
-    class Node extends AtomicInteger{
-        private Node nextNode;
-
-        public void setNextNode(Node next){
-            nextNode = next;
-        }
-
-        public Node next(){
-            return nextNode;
-        }
-    }
 }
