@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * this util is used to generate serial number
@@ -18,7 +15,7 @@ import java.util.concurrent.atomic.LongAdder;
 public class SerialNumberUtil {
 
     @Autowired
-    private MillsecondIncrTask millsecondIncrTask;
+    private MillisecondIncr millisecondIncr;
 
     @Value("${server.id}")
     private String serverId;
@@ -44,7 +41,8 @@ public class SerialNumberUtil {
         String serialNumberStr = generateSerialNumber();
         sb.append(serialNumberStr);
         sb.append(serverId);
-        sb.append(millsecondIncrTask.getLongValueStr(Integer.parseInt(serialNumberStr.substring(10))));
+        String ms = serialNumberStr.substring((10));
+        sb.append(millisecondIncr.getAndIncrValueStr(ms));
         return sb.toString();
     }
 

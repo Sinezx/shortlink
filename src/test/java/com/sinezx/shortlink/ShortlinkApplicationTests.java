@@ -1,6 +1,6 @@
 package com.sinezx.shortlink;
 
-import com.sinezx.shortlink.util.MillsecondIncrTask;
+import com.sinezx.shortlink.util.MillisecondIncr;
 import com.sinezx.shortlink.util.SerialNumberUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +22,7 @@ class ShortlinkApplicationTests {
 	private SerialNumberUtil serialNumberUtil;
 
 	@Autowired
-	private MillsecondIncrTask millsecondIncrTask;
+	private MillisecondIncr millsecondIncr;
 
 	@Test
 	void contextLoads() throws InterruptedException {
@@ -35,7 +33,7 @@ class ShortlinkApplicationTests {
 		AtomicInteger flag = new AtomicInteger(0);
 		for(int i = 0; i< current; i++) {
 			executor.execute(() -> {
-				for (int j = 0; j < 100000; j++) {
+				for (int j = 0; j < 10000; j++) {
 					String tmp = serialNumberUtil.concurrencyGenerateSerialNumber();
 					String dateTmp = dateFormat.format(new Date());
 //					String tmp = millsecondIncrTask.getLongValueStr();
@@ -53,16 +51,6 @@ class ShortlinkApplicationTests {
 		while(flag.get() < current){}
 		System.out.println(flag.get());
 		System.out.println(map.size());
-	}
-
-	@Test
-	public void test(){
-		AtomicInteger atomicInteger = new AtomicInteger(999);
-		int b = Integer.MAX_VALUE;
-		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
-		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
-		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
-		System.out.println((atomicInteger.getAndIncrement() & b) % 1000);
 	}
 
 }
