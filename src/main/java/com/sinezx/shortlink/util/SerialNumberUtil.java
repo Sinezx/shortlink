@@ -1,7 +1,9 @@
 package com.sinezx.shortlink.util;
 
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -14,11 +16,21 @@ import java.util.Date;
 @Component
 public class SerialNumberUtil {
 
-    @Autowired
-    private MillisecondIncr millisecondIncr;
+    private static final Logger log = LoggerFactory.getLogger(SerialNumberUtil.class);
 
-    @Value("${server.id}")
+    @Autowired
+    public MillisecondIncr millisecondIncr;
+
+    @Autowired
+    public RegisterUtil registerUtil;
+
     private String serverId;
+
+    @PostConstruct
+    public void init(){
+        serverId = registerUtil.getServerId("/shortlink/ids");
+        log.info(String.format("serverId: %s", serverId));
+    }
 
     /**
      * default generate fun
@@ -27,8 +39,7 @@ public class SerialNumberUtil {
      */
     public String generateSerialNumber(){
         DateFormat dateFormat = new SimpleDateFormat("MMddHHmmssSSS");
-        String dateStr = dateFormat.format(new Date());
-        return dateStr;
+        return dateFormat.format(new Date());
     }
 
     /**

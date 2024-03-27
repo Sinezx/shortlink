@@ -53,6 +53,12 @@
 			<version>33.1.0-jre</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>5.6.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
