@@ -21,4 +21,16 @@
         insert into callback_info(create_sn, code, content, callback_url, create_time, expire_time)
         value (#{createSn}, #{code}, #{content}, #{callbackUrl}, now(), #{expireTime});
     </insert>
+
+    <select id="selectOneByCreateSn" resultMap="CallbackInfoMap">
+        select create_sn, code, content, callback_url, create_time, expire_time
+        from callback_info
+        where create_sn = #{createSn}
+    </select>
+
+    <select id="selectOneByCode" resultMap="CallbackInfoMap">
+        select create_sn, code, content, callback_url, create_time, expire_time
+        from callback_info
+        where code = #{code}
+    </select>
 </mapper>

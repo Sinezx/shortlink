@@ -2,6 +2,7 @@ package com.sinezx.shortlink.service;
 
 import com.sinezx.shortlink.mapper.CallbackMapper;
 import com.sinezx.shortlink.pojo.CallbackInfo;
+import com.sinezx.shortlink.pojo.GetShortLinkInfo;
 import com.sinezx.shortlink.util.HashUtil;
 import com.sinezx.shortlink.util.SerialNumberUtil;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -62,6 +64,20 @@ public class ShortLinkService {
                 }
             }
         });
+
+    }
+
+    public CallbackInfo getShortLinkInfo(GetShortLinkInfo getShortLinkInfo) {
+        return callbackMapper.selectOneByCreateSn(getShortLinkInfo.getCreateSn());
+    }
+
+    public String getCallbackUrl(String code) {
+        CallbackInfo callbackInfo = callbackMapper.selectOneByCode(code);
+        String redirectUrl = "";
+        if(!ObjectUtils.isEmpty(callbackInfo)){
+            redirectUrl = callbackInfo.getCallbackUrl() + "?sn=" + callbackInfo.getCreateSn();
+        }
+        return redirectUrl;
 
     }
 }

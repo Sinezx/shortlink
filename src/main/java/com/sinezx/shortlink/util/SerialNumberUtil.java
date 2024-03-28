@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -18,6 +19,9 @@ public class SerialNumberUtil {
 
     private static final Logger log = LoggerFactory.getLogger(SerialNumberUtil.class);
 
+    @Value("${register.path.serverId:/shortlink/ids}")
+    private static String registerPath;
+
     @Autowired
     public MillisecondIncr millisecondIncr;
 
@@ -28,7 +32,7 @@ public class SerialNumberUtil {
 
     @PostConstruct
     public void init(){
-        serverId = registerUtil.getServerId("/shortlink/ids");
+        serverId = registerUtil.getServerId(registerPath);
         log.info(String.format("serverId: %s", serverId));
     }
 
