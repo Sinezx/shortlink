@@ -7,11 +7,15 @@ import com.sinezx.shortlink.pojo.GetShortLinkInfo;
 import com.sinezx.shortlink.service.ShortLinkService;
 import com.sinezx.shortlink.vo.ShortLinkVO;
 import com.sinezx.shortlink.vo.base.Resp;
+import org.apache.zookeeper.common.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 public class ShortLinkController {
@@ -21,8 +25,18 @@ public class ShortLinkController {
 
     @RequestMapping("/generateshortlink")
     public Resp generateShortLink(@RequestBody GenerateShortLink generateShortLink){
-        String code = shortLinkService.generateShortCode(generateShortLink.getContent(), generateShortLink.getCallbackUrl());
-        return Resp.success(new ShortLinkVO(code));
+        String callbackUrl = generateShortLink.getCallbackUrl();
+        if(ObjectUtils.isEmpty(callbackUrl)){
+            return Resp.error("callbackUrl is null");
+        }
+        Pattern pattern = Pattern.compile("^http(s?)://");
+        Matcher matcher = pattern.matcher(callbackUrl);
+        if(matcher.lookingAt()) {
+            String code = shortLinkService.generateShortCode(generateShortLink.getContent(), callbackUrl);
+            return Resp.success(new ShortLinkVO(code));
+        }else{
+            return Resp.error("callbackUrl is null or invalid");
+        }
     }
 
     @RequestMapping("/getshortlinkinfo")

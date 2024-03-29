@@ -5,6 +5,7 @@ import com.sinezx.shortlink.pojo.CallbackInfo;
 import com.sinezx.shortlink.pojo.GetShortLinkInfo;
 import com.sinezx.shortlink.util.HashUtil;
 import com.sinezx.shortlink.util.SerialNumberUtil;
+import com.sinezx.shortlink.util.SystemConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,10 @@ public class ShortLinkService {
     private TransactionTemplate transactionTemplate;
 
     public String generateShortCode(String content, String callbackUrl){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
-        return generateShortCode(content, callbackUrl, calendar.getTime());
+        return generateShortCode(content, callbackUrl, 1, SystemConstant.DAY);
     }
 
-    public String generateShortCode(String content, String callbackUrl, Date date){
+    public String generateShortCode(String content, String callbackUrl, int delay, String delayType){
         return transactionTemplate.execute(new TransactionCallback<String>(){
 
             @Override
@@ -52,9 +50,10 @@ public class ShortLinkService {
                     CallbackInfo callbackInfo = new CallbackInfo();
                     callbackInfo.setCode(code);
                     callbackInfo.setCreateSn(createSn);
-                    callbackInfo.setExpireTime(date);
                     callbackInfo.setContent(content);
                     callbackInfo.setCallbackUrl(callbackUrl);
+                    callbackInfo.setDelay(delay);
+                    callbackInfo.setDelayType(delayType);
                     callbackMapper.insertOne(callbackInfo);
                     return code;
                 }catch (Exception e){

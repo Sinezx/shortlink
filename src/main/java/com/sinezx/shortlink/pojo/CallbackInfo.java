@@ -11,7 +11,21 @@ public class CallbackInfo {
     private String callbackUrl;
     private Date createTime;
     private Date expireTime;
+    private int delay;
+    private String delayType;
 
+    public int getDelay() {
+        return delay;
+    }
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
+    public String getDelayType() {
+        return delayType;
+    }
+    public void setDelayType(String delayType) {
+        this.delayType = delayType;
+    }
     public Integer getId() {
         return id;
     }

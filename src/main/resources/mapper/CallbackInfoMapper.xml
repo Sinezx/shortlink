@@ -19,7 +19,19 @@
 
     <insert id="insertOne">
         insert into callback_info(create_sn, code, content, callback_url, create_time, expire_time)
-        value (#{createSn}, #{code}, #{content}, #{callbackUrl}, now(), #{expireTime});
+        value (#{createSn}, #{code}, #{content}, #{callbackUrl}, now(), date_add(now(), interval #{delay}
+        <choose>
+            <when test="delayType == 'DAY'">
+                DAY
+            </when>
+            <when test="delayType == 'HOUR'">
+                HOUR
+            </when>
+            <otherwise>
+                DAY
+            </otherwise>
+        </choose>
+        ));
     </insert>
 
     <select id="selectOneByCreateSn" resultMap="CallbackInfoMap">

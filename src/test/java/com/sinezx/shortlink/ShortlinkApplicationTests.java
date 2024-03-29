@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sinezx.shortlink.vo.ShortLinkVO;
 import com.sinezx.shortlink.vo.base.Resp;
+import org.apache.curator.CuratorZookeeperClient;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.utils.CloseableUtils;
 import org.apache.zookeeper.CreateMode;
@@ -89,22 +90,7 @@ class ShortlinkApplicationTests {
 
 	@Test
 	void zkClientTest(){
-		String dir = "/shortlink";
-		String sub = "/instance";
-		try {
-			curatorFramework.start();
-			if(curatorFramework.checkExists().forPath(dir) == null){
-				curatorFramework.create().forPath(dir);
-			}
-			if(curatorFramework.checkExists().forPath(dir + sub) == null){
-				curatorFramework.create().withMode(CreateMode.EPHEMERAL).forPath(dir + sub);
-			}
-			Stat stat = curatorFramework.setData().forPath(dir + sub, "01".getBytes(StandardCharsets.UTF_8));
-			System.out.println(stat);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			CloseableUtils.closeQuietly(curatorFramework);
-		}
+
 	}
 
 }
