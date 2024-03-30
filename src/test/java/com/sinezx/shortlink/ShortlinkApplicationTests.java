@@ -1,15 +1,9 @@
 package com.sinezx.shortlink;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sinezx.shortlink.vo.ShortLinkVO;
-import com.sinezx.shortlink.vo.base.Resp;
-import org.apache.curator.CuratorZookeeperClient;
+import com.sinezx.shortlink.util.ExpireTypeSelector;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.utils.CloseableUtils;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.data.Stat;
 import org.assertj.core.api.Assertions;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -22,9 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -46,6 +37,8 @@ class ShortlinkApplicationTests {
 		JSONObject genJson = new JSONObject();
 		genJson.put("content", content);
 		genJson.put("callbackUrl", callbackUrl);
+		genJson.put("expire", 1);
+		genJson.put("expireType", "HOUR");
 		ResultActions generate = mockMvc.perform(
 				MockMvcRequestBuilders
 						.post("/generateshortlink")
@@ -90,7 +83,8 @@ class ShortlinkApplicationTests {
 
 	@Test
 	void zkClientTest(){
-
+		ExpireTypeSelector expireTypeSelector = new ExpireTypeSelector(24, "HOUR");
+		System.out.println(expireTypeSelector.getExpire() + expireTypeSelector.getExpireType());
 	}
 
 }

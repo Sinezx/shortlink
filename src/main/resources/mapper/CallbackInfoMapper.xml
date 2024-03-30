@@ -45,4 +45,9 @@
         from callback_info
         where code = #{code}
     </select>
+
+    <delete id="deleteExpireShortlink">
+        delete from callback_info
+        where expire_time &lt; now()
+    </delete>
 </mapper>

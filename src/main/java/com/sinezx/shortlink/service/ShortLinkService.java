@@ -6,8 +6,7 @@ import com.sinezx.shortlink.pojo.GetShortLinkInfo;
 import com.sinezx.shortlink.util.ExpireTypeSelector;
 import com.sinezx.shortlink.util.HashUtil;
 import com.sinezx.shortlink.util.SerialNumberUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -16,10 +15,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 @Service
+@Slf4j
 public class ShortLinkService {
-
-    private static final Logger log = LoggerFactory.getLogger(ShortLinkService.class);
-
     @Autowired
     private SerialNumberUtil serialNumberUtil;
 

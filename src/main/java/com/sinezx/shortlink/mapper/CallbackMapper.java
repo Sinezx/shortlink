@@ -15,4 +15,6 @@ public interface CallbackMapper {
     CallbackInfo selectOneByCreateSn(String createSn);
 
     CallbackInfo selectOneByCode(String code);
+
+    int deleteExpireShortlink();
 }

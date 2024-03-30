@@ -1,5 +1,10 @@
 package com.sinezx.shortlink.util;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ExpireTypeSelector {
     private int expire;
     private String expireType;
