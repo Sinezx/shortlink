@@ -3,9 +3,9 @@ package com.sinezx.shortlink.service;
 import com.sinezx.shortlink.mapper.CallbackMapper;
 import com.sinezx.shortlink.pojo.CallbackInfo;
 import com.sinezx.shortlink.pojo.GetShortLinkInfo;
+import com.sinezx.shortlink.util.ExpireTypeSelector;
 import com.sinezx.shortlink.util.HashUtil;
 import com.sinezx.shortlink.util.SerialNumberUtil;
-import com.sinezx.shortlink.util.SystemConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
-
-import java.util.Calendar;
-import java.util.Date;
 
 @Service
 public class ShortLinkService {
@@ -35,11 +32,13 @@ public class ShortLinkService {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
-    public String generateShortCode(String content, String callbackUrl){
-        return generateShortCode(content, callbackUrl, 1, SystemConstant.DAY);
+    public String generateShortCode(String content, String callbackUrl, int expire, String expireType){
+        //Legitimate expire operation
+        ExpireTypeSelector expireTypeSelector = new ExpireTypeSelector(expire, expireType);
+        return generateShortCodeDefault(content, callbackUrl, expireTypeSelector.getExpire(), expireTypeSelector.getExpireType());
     }
 
-    public String generateShortCode(String content, String callbackUrl, int delay, String delayType){
+    public String generateShortCodeDefault(String content, String callbackUrl, int expire, String expireType){
         return transactionTemplate.execute(new TransactionCallback<String>(){
 
             @Override
@@ -52,8 +51,8 @@ public class ShortLinkService {
                     callbackInfo.setCreateSn(createSn);
                     callbackInfo.setContent(content);
                     callbackInfo.setCallbackUrl(callbackUrl);
-                    callbackInfo.setDelay(delay);
-                    callbackInfo.setDelayType(delayType);
+                    callbackInfo.setExpire(expire);
+                    callbackInfo.setExpireType(expireType);
                     callbackMapper.insertOne(callbackInfo);
                     return code;
                 }catch (Exception e){

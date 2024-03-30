@@ -11,20 +11,24 @@ public class CallbackInfo {
     private String callbackUrl;
     private Date createTime;
     private Date expireTime;
-    private int delay;
-    private String delayType;
+    private int expire;
 
-    public int getDelay() {
-        return delay;
+    private String expireType;
+
+    public int getExpire() {
+        return expire;
     }
-    public void setDelay(int delay) {
-        this.delay = delay;
+
+    public void setExpire(int expire) {
+        this.expire = expire;
     }
-    public String getDelayType() {
-        return delayType;
+
+    public String getExpireType() {
+        return expireType;
     }
-    public void setDelayType(String delayType) {
-        this.delayType = delayType;
+
+    public void setExpireType(String expireType) {
+        this.expireType = expireType;
     }
     public Integer getId() {
         return id;

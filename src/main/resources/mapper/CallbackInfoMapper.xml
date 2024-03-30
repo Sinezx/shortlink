@@ -19,12 +19,12 @@
 
     <insert id="insertOne">
         insert into callback_info(create_sn, code, content, callback_url, create_time, expire_time)
-        value (#{createSn}, #{code}, #{content}, #{callbackUrl}, now(), date_add(now(), interval #{delay}
+        value (#{createSn}, #{code}, #{content}, #{callbackUrl}, now(), date_add(now(), interval #{expire}
         <choose>
-            <when test="delayType == 'DAY'">
+            <when test="expireType == 'DAY'">
                 DAY
             </when>
-            <when test="delayType == 'HOUR'">
+            <when test="expireType == 'HOUR'">
                 HOUR
             </when>
             <otherwise>

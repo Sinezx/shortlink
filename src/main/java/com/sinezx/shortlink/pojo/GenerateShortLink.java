@@ -5,6 +5,26 @@ public class GenerateShortLink {
 
     private String callbackUrl;
 
+    private int expire;
+
+    private String expireType;
+
+    public int getExpire() {
+        return expire;
+    }
+
+    public void setExpire(int expire) {
+        this.expire = expire;
+    }
+
+    public String getExpireType() {
+        return expireType;
+    }
+
+    public void setExpireType(String expireType) {
+        this.expireType = expireType;
+    }
+
     public String getContent() {
         return content;
     }

@@ -7,7 +7,6 @@ import com.sinezx.shortlink.pojo.GetShortLinkInfo;
 import com.sinezx.shortlink.service.ShortLinkService;
 import com.sinezx.shortlink.vo.ShortLinkVO;
 import com.sinezx.shortlink.vo.base.Resp;
-import org.apache.zookeeper.common.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,17 +24,20 @@ public class ShortLinkController {
 
     @RequestMapping("/generateshortlink")
     public Resp generateShortLink(@RequestBody GenerateShortLink generateShortLink){
+        String content = generateShortLink.getContent();
         String callbackUrl = generateShortLink.getCallbackUrl();
+        int expire = generateShortLink.getExpire();
+        String expireType = generateShortLink.getExpireType();
         if(ObjectUtils.isEmpty(callbackUrl)){
             return Resp.error("callbackUrl is null");
         }
         Pattern pattern = Pattern.compile("^http(s?)://");
         Matcher matcher = pattern.matcher(callbackUrl);
         if(matcher.lookingAt()) {
-            String code = shortLinkService.generateShortCode(generateShortLink.getContent(), callbackUrl);
+            String code = shortLinkService.generateShortCode(content, callbackUrl, expire, expireType);
             return Resp.success(new ShortLinkVO(code));
         }else{
-            return Resp.error("callbackUrl is null or invalid");
+            return Resp.error("callbackUrl invalid");
         }
     }
 
