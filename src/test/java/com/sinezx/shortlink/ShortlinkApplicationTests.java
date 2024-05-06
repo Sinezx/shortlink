@@ -3,6 +3,7 @@ package com.sinezx.shortlink;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sinezx.shortlink.util.ExpireTypeSelector;
+import com.sinezx.shortlink.util.SerialNumberUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.assertj.core.api.Assertions;
 import org.json.JSONObject;
@@ -17,6 +18,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class ShortlinkApplicationTests {
@@ -26,6 +33,9 @@ class ShortlinkApplicationTests {
 
 	@Autowired
 	private CuratorFramework curatorFramework;
+
+	@Autowired
+	private SerialNumberUtil serialNumberUtil;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -79,6 +89,29 @@ class ShortlinkApplicationTests {
 		Assertions.assertThat(getResp.get("data")).isNotNull();
 		String getContent = getResp.get("data").get("content").asText();
 		Assertions.assertThat(getContent).isEqualTo(content);
+	}
+
+	@Test
+	void serialNumberTest(){
+		ExecutorService threadpool = new ThreadPoolExecutor(100, 100,
+				0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(10000000));
+		Map<String, Object> map = new ConcurrentHashMap<>();
+		for(int i = 0; i < 1000; i++){
+			threadpool.execute(()->{
+				for(int j = 0; j < 10000; j++){
+					String serialId = serialNumberUtil.concurrencyGenerateSerialNumber();
+					if(map.containsKey(serialId)){
+						System.out.println(serialId);
+					}else{
+						map.put(serialId, new Object());
+					}
+				}
+
+			});
+		}
+		threadpool.shutdown();
+		while(!threadpool.isTerminated()){}
+		System.out.println(map.size());
 	}
 
 	@Test

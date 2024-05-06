@@ -17,7 +17,6 @@
 		<java.version>21</java.version>
 		<org.mybatis.spring.boot.version>3.0.3</org.mybatis.spring.boot.version>
 		<com.mysql.version>8.3.0</com.mysql.version>
-		<com.google.guava.version>33.1.0-jre</com.google.guava.version>
 		<org.apache.curator.version>5.6.0</org.apache.curator.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 		<lombok.version>1.18.30</lombok.version>
@@ -51,12 +50,6 @@
 			<artifactId>mybatis-spring-boot-starter-test</artifactId>
 			<version>${org.mybatis.spring.boot.version}</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${com.google.guava.version}</version>
 		</dependency>
 
 		<dependency>

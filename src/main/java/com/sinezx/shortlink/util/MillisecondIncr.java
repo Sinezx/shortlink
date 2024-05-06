@@ -4,26 +4,23 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 @Component
 public class MillisecondIncr {
 
     private final static int CAPACITY = 1000;
 
-    @Value("${ms.incr.threshold:10000}")
+    @Value("${ms.incr.threshold:9999}")
     private int threshold;
     @Value("${ms.incr.strFormat:%04d}")
     private String strFormat;
 
-    private AtomicInteger[] atomicIntegerMap;
+    private AtomicIntegerArray atomicIntegerArray;
 
     @PostConstruct
     private void init(){
-        atomicIntegerMap = new AtomicInteger[CAPACITY];
-        for(int i = 0; i < CAPACITY; i++){
-            atomicIntegerMap[i] = new AtomicInteger(0);
-        }
+        atomicIntegerArray = new AtomicIntegerArray(threshold);
     }
 
     public int getAndIncrValue(String ms){
@@ -33,8 +30,7 @@ public class MillisecondIncr {
 
     private int getAndIncrValue(int ms){
         assert 0 <= ms && ms < CAPACITY;
-        int abs = atomicIntegerMap[ms].getAndIncrement() & Integer.MAX_VALUE;
-        return abs % threshold;
+        return atomicIntegerArray.getAndUpdate(ms, i -> i == threshold ? 0 : i + 1);
     }
 
     public String getAndIncrValueStr(String ms){

@@ -39,14 +39,14 @@ public class SerialNumberUtil {
      * format: MMddHHmmssSSS
      * @return serial number
      */
-    public String generateSerialNumber(){
+    private String generateSerialNumber(){
         DateFormat dateFormat = new SimpleDateFormat("MMddHHmmssSSS");
         return dateFormat.format(new Date());
     }
 
     /**
      * High concurrency generate fun
-     * format: MMddHHmmssSSS
+     * format: MMddHHmmssSSS + serverid + msIncr
      * @return serial number
      */
     public String concurrencyGenerateSerialNumber(){
